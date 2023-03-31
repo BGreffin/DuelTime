@@ -14,7 +14,7 @@ module.exports.login = async(req,res) => {
             
         //If duelist doesn't exist
         if (!duelist) 
-            {return res.status(400).json({msg:'Invalid Credentials'})};
+            {return res.status(400).json({msg:'Invalid Username'})};
 
         //Verify Password
         const isMatch = await bcrypt.compare(req.body.password,duelist.password)
@@ -37,13 +37,13 @@ module.exports.login = async(req,res) => {
 
 module.exports.register = async(req,res) => {
     try {
-        //Verify username is available
-        duelistCheck = await Duelist.findOne({userName: req.body.userName})
+        //Find duelist 
+        duelist = await Duelist.findOne({userName: req.body.userName});
             
-        if (duelistCheck!==null) {
-            return res.status(400).json({msg:'Username already exists'})
-        };
-
+        //If duelist doesn't exist
+        if (duelist) 
+            {return res.status(400).json({errors: {userName:'username is not available'}})};
+        
         //create duelist
         Duelist.create(req.body)
             .then(rduelist=> {
@@ -51,11 +51,14 @@ module.exports.register = async(req,res) => {
                 //Create cookie
                 const token = jwt.sign(payload, process.env.SECRET_KEY);
                 rduelist.token = token;
-                return res.cookie("token",token,{ httpOnly: true/*, sameSite: 'none', secure: false */}).json({msg:"Registration Successful", token: token, duelist: reduelist})}
+                res.cookie("token",token,{ httpOnly: true})
+                res.json({msg:"Registration Successful", rduelist: rduelist})}
                 )
+            .catch((err) => {res.status(400).json(err)})
     }
     catch(err) { 
-        return res.status(400).json(err)
+        console.log(err)
+        res.status(500).json({msg: 'Server Error'})
     }
 
 }
@@ -93,4 +96,10 @@ module.exports.deleteDuelist = (req,res) => {
     Duelist.deleteOne({userName: req.params.userName})
         .then(result => res.json(result))
         .catch((err) => res.status(400).json({err}))
+}
+
+module.exports.deleteDuelist2 = (req,res) => {
+        Duelist.deleteOne({_id: req.params.id})
+            .then(result => res.json(result))
+            .catch((err) => res.status(400).json({err}))
 }

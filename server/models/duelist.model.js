@@ -10,7 +10,8 @@ const DuelistSchema = new mongoose.Schema({
         required: [true,'There must be a last name'] },
     userName: { type: String,
         minLength: [5,"The username should be at least five characters"],
-        required: [true,'There must be an username'] },
+        required: [true,'There must be an username'],
+        unique: true },
     email: { type: String,
         minLength: [6,"The last name should be at least six characters"],
         required: [true,'There must be an email'],
@@ -21,7 +22,6 @@ const DuelistSchema = new mongoose.Schema({
     password: { type: String,
         minLength: [8,"The password should be at least eight characters"],
         required: [true,'There must be a password']},
-    token: {type: String},
     },
     {timestamps: true},
 );

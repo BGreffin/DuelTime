@@ -19,4 +19,5 @@ module.exports = (app) => {
     //unused routes
     app.get('/duelists/get',DuelistController.findAllDuelists);
     app.delete('/duelists/delete/:userName',DuelistController.deleteDuelist);
+    app.delete('/duelists/delete/:id',DuelistController.deleteDuelist2);
 } 
