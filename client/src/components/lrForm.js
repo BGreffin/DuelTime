@@ -32,9 +32,9 @@ const LRForm = (props) => {
     //Handler for the Registration Form
     const onSubmitHandler = (e) => {
         e.preventDefault();
-        axios.post("http://localhost:8000/register",{firstName,lastName,userName,email,password,cpassword})
+        axios.post('http://localhost:8000/api/register',{firstName,lastName,userName,email,password})
             .then((res) => {console.log(res);navigate(`/api/duelists/${userName}`)})
-            .catch((err) => {console.log(err);setErrors(err.response.data)})
+            .catch((err) => {console.log(err.response.data.errors);setErrors(err.response.data.errors)})
     }
 
     //Handler for the Login Form
@@ -94,6 +94,7 @@ const LRForm = (props) => {
                     <label>Last Name: <input type="text" name="lastName" value={lastName} onChange={handleLastName} style={{marginLeft: '10px'}} /></label><p/>
                     { errors.lastName ? <p>{errors.lastName.message}</p> : null}
                     <label>Username: <input type="text" name="userName" value={userName} onChange={handleUserName} style={{marginLeft: '10px'}} /></label><p/>
+                    {errors!=={} ? <p>{errors.userName}</p> : null}
                     { errors.userName ? <p>{errors.userName.message}</p> : null}
                     <label>Email: <input type="text" name="email" value={email} onChange={handleEmail} style={{marginLeft: '10px'}} /></label><p/>
                     { errors.email ? <p>{errors.email.message}</p> : null}
